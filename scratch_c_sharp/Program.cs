@@ -87,21 +87,198 @@ namespace scratch_c_sharp
 			EXIT
 		}
 
-		public enum ConversionMenu
+		public static Dictionary<int, string> TextEncodings = new Dictionary<int, string>()
 		{
-			ASCII,
-			BIG_ENDIAN_UNICODE,
-			DEFAULT,
-			ISO_8859_1,
-			UNICODE,
-			UTF32,
-			UTF_7,
-			UTF_8,
-			RETURN_TO_MAIN_MENU
+			{ 708,"  ASMO-708:                Arabic (ASMO 708)" },
+			{ 950,"  big5:                    Chinese Traditional (Big5)" },
+			{ 21025,"cp1025:                  IBM EBCDIC (Cyrillic Serbian-Bulgarian)" },
+			{ 866,"  cp866:                   Cyrillic (DOS)" },
+			{ 875,"  cp875:                   IBM EBCDIC (Greek Modern)" },
+			{ 50221,"csISO2022JP:             Japanese (JIS-Allow 1 byte Kana)" },
+			{ 720,"  DOS-720:                 Arabic (DOS)" },
+			{ 862,"  DOS-862:                 Hebrew (DOS)" },
+			{ 51936,"EUC-CN:                  Chinese Simplified (EUC)" },
+			{ 20932,"EUC-JP:                  Japanese (JIS 0208-1990 and 0212-1990)" },
+			{ 51932,"euc-jp:                  Japanese (EUC)" },
+			{ 51949,"euc-kr:                  Korean (EUC)" },
+			{ 54936,"GB18030:                 Chinese Simplified (GB18030)" },
+			{ 936,"  gb2312:                  Chinese Simplified (GB2312)" },
+			{ 52936,"hz-gb-2312:              Chinese Simplified (HZ)" },
+			{ 858,"  IBM00858:                OEM Multilingual Latin I" },
+			{ 20924,"IBM00924:                IBM Latin-1" },
+			{ 1047," IBM01047:                IBM Latin-1" },
+			{ 1140," IBM01140:                IBM EBCDIC (US-Canada-Euro)" },
+			{ 1141," IBM01141:                IBM EBCDIC (Germany-Euro)" },
+			{ 1142," IBM01142:                IBM EBCDIC (Denmark-Norway-Euro)" },
+			{ 1143," IBM01143:                IBM EBCDIC (Finland-Sweden-Euro)" },
+			{ 1144," IBM01144:                IBM EBCDIC (Italy-Euro)" },
+			{ 1145," IBM01145:                IBM EBCDIC (Spain-Euro)" },
+			{ 1146," IBM01146:                IBM EBCDIC (UK-Euro)" },
+			{ 1147," IBM01147:                IBM EBCDIC (France-Euro)" },
+			{ 1148," IBM01148:                IBM EBCDIC (International-Euro)" },
+			{ 1149," IBM01149:                IBM EBCDIC (Icelandic-Euro)" },
+			{ 37,"   IBM037:                  IBM EBCDIC (US-Canada)" },
+			{ 1026," IBM1026:                 IBM EBCDIC (Turkish Latin-5)" },
+			{ 20273,"IBM273:                  IBM EBCDIC (Germany)" },
+			{ 20277,"IBM277:                  IBM EBCDIC (Denmark-Norway)" },
+			{ 20278,"IBM278:                  IBM EBCDIC (Finland-Sweden)" },
+			{ 20280,"IBM280:                  IBM EBCDIC (Italy)" },
+			{ 20284,"IBM284:                  IBM EBCDIC (Spain)" },
+			{ 20285,"IBM285:                  IBM EBCDIC (UK)" },
+			{ 20290,"IBM290:                  IBM EBCDIC (Japanese katakana)" },
+			{ 20297,"IBM297:                  IBM EBCDIC (France)" },
+			{ 20420,"IBM420:                  IBM EBCDIC (Arabic)" },
+			{ 20423,"IBM423:                  IBM EBCDIC (Greek)" },
+			{ 20424,"IBM424:                  IBM EBCDIC (Hebrew)" },
+			{ 437,"  IBM437:                  OEM United States" },
+			{ 500,"  IBM500:                  IBM EBCDIC (International)" },
+			{ 737,"  ibm737:                  Greek (DOS)" },
+			{ 775,"  ibm775:                  Baltic (DOS)" },
+			{ 850,"  ibm850:                  Western European (DOS)" },
+			{ 852,"  ibm852:                  Central European (DOS)" },
+			{ 855,"  IBM855:                  OEM Cyrillic" },
+			{ 857,"  ibm857:                  Turkish (DOS)" },
+			{ 860,"  IBM860:                  Portuguese (DOS)" },
+			{ 861,"  ibm861:                  Icelandic (DOS)" },
+			{ 863,"  IBM863:                  French Canadian (DOS)" },
+			{ 864,"  IBM864:                  Arabic (864)" },
+			{ 865,"  IBM865:                  Nordic (DOS)" },
+			{ 869,"  ibm869:                  Greek, Modern (DOS)" },
+			{ 870,"  IBM870:                  IBM EBCDIC (Multilingual Latin-2)" },
+			{ 20871,"IBM871:                  IBM EBCDIC (Icelandic)" },
+			{ 20880,"IBM880:                  IBM EBCDIC (Cyrillic Russian)" },
+			{ 20905,"IBM905:                  IBM EBCDIC (Turkish)" },
+			{ 20838,"IBM-Thai:                IBM EBCDIC (Thai)" },
+			{ 50220,"iso-2022-jp:             Japanese (JIS)" },
+			{ 50222,"iso-2022-jp:             Japanese (JIS-Allow 1 byte Kana - SO/SI)" },
+			{ 50225,"iso-2022-kr:             Korean (ISO)" },
+			{ 28591,"iso-8859-1:              Western European (ISO)" },
+			{ 28603,"iso-8859-13:             Estonian (ISO)" },
+			{ 28605,"iso-8859-15:             Latin 9 (ISO)" },
+			{ 28592,"iso-8859-2:              Central European (ISO)" },
+			{ 28593,"iso-8859-3:              Latin 3 (ISO)" },
+			{ 28594,"iso-8859-4:              Baltic (ISO)" },
+			{ 28595,"iso-8859-5:              Cyrillic (ISO)" },
+			{ 28596,"iso-8859-6:              Arabic (ISO)" },
+			{ 28597,"iso-8859-7:              Greek (ISO)" },
+			{ 28598,"iso-8859-8:              Hebrew (ISO-Visual)" },
+			{ 38598,"iso-8859-8-i:            Hebrew (ISO-Logical)" },
+			{ 28599,"iso-8859-9:              Turkish (ISO)" },
+			{ 1361," Johab:                   Korean (Johab)" },
+			{ 20866,"koi8-r:                  Cyrillic (KOI8-R)" },
+			{ 21866,"koi8-u:                  Cyrillic (KOI8-U)" },
+			{ 949,"  ks_c_5601-1987:          Korean" },
+			{ 10000,"macintosh:               Western European (Mac)" },
+			{ 932,"  shift_jis:               Japanese (Shift-JIS)" },
+			{ 20127,"us-ascii:                US-ASCII" },
+			{ 1200," utf-16:                  Unicode" },
+			{ 1201," utf-16BE:                Unicode (Big-Endian)" },
+			{ 12000,"utf-32:                  Unicode (UTF-32)" },
+			{ 12001,"utf-32BE:                Unicode (UTF-32 Big-Endian)" },
+			{ 65000,"utf-7:                   Unicode (UTF-7)" },
+			{ 65001,"utf-8:                   Unicode (UTF-8)" },
+			{ 1250," windows-1250:            Central European (Windows)" },
+			{ 1251," windows-1251:            Cyrillic (Windows)" },
+			{ 1252," Windows-1252:            Western European (Windows)" },
+			{ 1253," windows-1253:            Greek (Windows)" },
+			{ 1254," windows-1254:            Turkish (Windows)" },
+			{ 1255," windows-1255:            Hebrew (Windows)" },
+			{ 1256," windows-1256:            Arabic (Windows)" },
+			{ 1257," windows-1257:            Baltic (Windows)" },
+			{ 1258," windows-1258:            Vietnamese (Windows)" },
+			{ 874,"  windows-874:             Thai (Windows)" },
+			{ 20000,"x-Chinese-CNS:           Chinese Traditional (CNS)" },
+			{ 20002,"x-Chinese-Eten:          Chinese Traditional (Eten)" },
+			{ 20001,"x-cp20001:               TCA Taiwan" },
+			{ 20003,"x-cp20003:               IBM5550 Taiwan" },
+			{ 20004,"x-cp20004:               TeleText Taiwan" },
+			{ 20005,"x-cp20005:               Wang Taiwan" },
+			{ 20261,"x-cp20261:               T.61" },
+			{ 20269,"x-cp20269:               ISO-6937" },
+			{ 20936,"x-cp20936:               Chinese Simplified (GB2312-80)" },
+			{ 20949,"x-cp20949:               Korean Wansung" },
+			{ 50227,"x-cp50227:               Chinese Simplified (ISO-2022)" },
+			{ 20833,"x-EBCDIC-KoreanExtended: IBM EBCDIC (Korean Extended)" },
+			{ 29001,"x-Europa:                Europa" },
+			{ 20105,"x-IA5:                   Western European (IA5)" },
+			{ 20106,"x-IA5-German:            German (IA5)" },
+			{ 20108,"x-IA5-Norwegian:         Norwegian (IA5)" },
+			{ 20107,"x-IA5-Swedish:           Swedish (IA5)" },
+			{ 57006,"x-iscii-as:              ISCII Assamese" },
+			{ 57003,"x-iscii-be:              ISCII Bengali" },
+			{ 57002,"x-iscii-de:              ISCII Devanagari" },
+			{ 57010,"x-iscii-gu:              ISCII Gujarati" },
+			{ 57008,"x-iscii-ka:              ISCII Kannada" },
+			{ 57009,"x-iscii-ma:              ISCII Malayalam" },
+			{ 57007,"x-iscii-or:              ISCII Oriya" },
+			{ 57011,"x-iscii-pa:              ISCII Punjabi" },
+			{ 57004,"x-iscii-ta:              ISCII Tamil" },
+			{ 57005,"x-iscii-te:              ISCII Telugu" },
+			{ 10004,"x-mac-arabic:            Arabic (Mac)" },
+			{ 10029,"x-mac-ce:                Central European (Mac)" },
+			{ 10008,"x-mac-chinesesimp:       Chinese Simplified (Mac)" },
+			{ 10002,"x-mac-chinesetrad:       Chinese Traditional (Mac)" },
+			{ 10082,"x-mac-croatian:          Croatian (Mac)" },
+			{ 10007,"x-mac-cyrillic:          Cyrillic (Mac)" },
+			{ 10006,"x-mac-greek:             Greek (Mac)" },
+			{ 10005,"x-mac-hebrew:            Hebrew (Mac)" },
+			{ 10079,"x-mac-icelandic:         Icelandic (Mac)" },
+			{ 10001,"x-mac-japanese:          Japanese (Mac)" },
+			{ 10003,"x-mac-korean:            Korean (Mac)" },
+			{ 10010,"x-mac-romanian:          Romanian (Mac)" },
+			{ 10021,"x-mac-thai:              Thai (Mac)" },
+			{ 10081,"x-mac-turkish:           Turkish (Mac)" },
+			{ 10017,"x-mac-ukrainian:         Ukrainian (Mac)" }
+		};
+
+		static Encoding GetFileEncoding(string filePath)
+		{
+			try
+			{
+				Encoding encoding;
+
+				using (StreamReader sr = new StreamReader(filePath, true))
+				{
+					if (sr.Peek() >= 0)
+						sr.Read();
+
+					encoding = sr.CurrentEncoding;
+				}
+
+				return encoding;
+			}
+			catch (Exception e)
+			{
+				WriteErrorToConsole(e);
+				return null;
+			}
 		}
 
 		static void Main(string[] args)
 		{
+			//int spacing = 24;
+			//int leading_spaces = 5;
+			//var encodings = Encoding.GetEncodings();
+			//List<string> output = new List<string>();
+			//foreach (var encoding in encodings)
+			//{
+			//	string tmp_spaces = new string(' ', spacing - encoding.Name.Length);
+			//	string tmp_spaces2 = new string(' ', leading_spaces - encoding.CodePage.ToString().Length);
+			//	//Console.WriteLine(String.Format("{1}, // {0}", encoding.DisplayName, encoding.Name.ToUpper().Replace('-','_')));
+			//	//output.Add(String.Format("{{ \"{1}\",\"{2}\" }}, // {0}", encoding.DisplayName, encoding.Name.ToUpper().Replace('-', '_'), encoding.CodePage));
+			//	//output.Add(String.Format("{0} = {1}, // {2}", encoding.Name.ToUpper().Replace('-', '_'), encoding.CodePage, encoding.DisplayName));
+			//	output.Add(String.Format("{2}	{{ {1},\"{4}{2}:{3}{0}\" }},", encoding.DisplayName, encoding.CodePage, encoding.Name, tmp_spaces, tmp_spaces2));
+			//}
+
+			//string[] o = output.ToArray();
+			//Array.Sort(o);
+			//foreach (var s in o)
+			//{
+			//	Console.WriteLine(s.Substring(s.IndexOf('{'), s.Length - s.IndexOf('{')));
+			//}
+
+			//Console.ReadLine();
+
 			int menuChoice = -1;
 			bool clearConsole = true;
 
@@ -153,7 +330,7 @@ namespace scratch_c_sharp
 								}
 								break;
 							case (int)Menu.FINAL_PRICE:
-								finalPrice(new List<int>() { 1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1000001 });
+								finalPrice(new List<int>() { 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1000001 });
 								break;
 							case (int)Menu.CAR_PRICER:
 								/*
@@ -177,7 +354,7 @@ namespace scratch_c_sharp
 								PriceDeterminator price = new PriceDeterminator();
 
 								Console.WriteLine("$" + price.DetermineCarPrice(car));
-							   
+
 								break;
 							case (int)Menu.CONVERT_UTF8_TO_ISO88591:
 								ConvertFile();
@@ -206,100 +383,372 @@ namespace scratch_c_sharp
 			}
 		}
 
+		static string DEFAULT_DEST_FILENAME(string newFilename, Encoding destEncoding)
+		{
+			string output = String.IsNullOrEmpty(newFilename) ? "output.markdown" : newFilename;
+			if (destEncoding == null)
+				output = output.Insert(output.IndexOf(new FileInfo(output).Extension), "_UNKNOWN");
+			else output = output.Insert(output.IndexOf(new FileInfo(output).Extension), "_" + destEncoding.EncodingName.Replace(' ', '-'));
+			return output;
+		}
+
 		static void ConvertFile(bool clearConsole = true)
 		{
-			WriteTextEncodingMenu("Select Source Encoding:", clearConsole);
-			
-			// TODO
+			// Encoding Statics
+			string DEFAULT_SOURCE_PATH = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+			string DEFAULT_SOURCE_FILENAME = "output.markdown";
+			string DEFAULT_DEST_PATH = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-			// Show menu and get the source file info from the user
-			Console.WriteLine("Text Converstion Menu:\r\nOnly supports UTF-8 to ISO-8859-1 currently.\r\n\r\nInput a path to a file to convert:");
+			bool useFileSourceEncoding = false;
+
+			Encoding sourceEncoding = null;
+			Encoding destEncoding = null;
 			string filename = "";
-			string path = Console.ReadLine();
-
-			if (String.IsNullOrEmpty(path))
-			{
-				path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-				WriteToConsole(null, null, "Using default file path: '{0}'", path);
-			}
-
-			if (String.IsNullOrEmpty(new FileInfo(path).Extension))
-			{
-				Console.WriteLine("Input a file name to convert:");
-				filename = Console.ReadLine();
-
-				if (String.IsNullOrEmpty(filename))
-				{
-					filename = "2019-02-01-test-page.markdown";
-					WriteToConsole(null, null, "Using default file name: '{0}'", filename);
-				}
-			}
-
-			string fullPath = Path.Combine(path, filename);
-
-			// Get the destination file info from the user
-			Console.WriteLine("Input a path to a path you would like to write to:");
+			string path = "";
+			string fullPath = "";
 			string newFilename = "";
-			string newPath = Console.ReadLine();
+			string newPath = "";
+			string selection;
 
-			if (String.IsNullOrEmpty(newPath))
+			string sourceEncodingHeadline = "Select Source Encoding:\r\n";
+			string destEncodingHeadline = "Select Destination Encoding:\r\n";
+			string sourcePathHeadline = "Select a Source Folder Path:\r\n";
+			string destPathHeadline = "Select a Destination Folder Path:\r\n";
+			string sourceFileHeadline = "Select a Source File Name:\r\n";
+			string destFileHeadline = "Select a Destination File Name:\r\n";
+
+
+			string[] sourceEncodingMenu = new string[]
 			{
-				//Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
-				newPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Default");
-				WriteToConsole(null, null, "Using default file path: '{0}'", newPath);
-			}
-
-			if (String.IsNullOrEmpty(new FileInfo(newPath).Extension))
+				"0. Use Source Text Encoding\r\n",
+				"1. Choose Specific Text Encoding\r\n"
+			};
+			string[] destEncodingMenu = new string[]
 			{
-				Console.WriteLine("Input a filename to write to:");
-				newFilename = Console.ReadLine();
+				"0. Use Default Text Encoding (UTF-8)\r\n",
+				"1. Choose Specific Text Encoding\r\n"
+			};
+			string[] fileMenu = new string[]
+			{
+				String.Format("0. Use Default File Name\r\n"),
+				"1. Input Custom File Name\r\n"
+			};
+			string[] pathMenu = new string[]
+			{
+				String.Format("0. Use Default Path\r\n"),
+				"1. Input Custom Folder Path\r\n"
+			};
 
-				if (String.IsNullOrEmpty(newFilename))
+			bool goToMainMenu = false;
+
+			while (!goToMainMenu)
+			{
+				int selectionIndex = -1;
+				string[] encodingMainMenu = new string[]
 				{
-					newFilename = "2019-02-01-test-page.markdown";
-					WriteToConsole(null, null, "Using default file name: '{0}'", newFilename);
-				}
-			}
-			else
-			{
-				WriteToConsole(ConsoleColor.Yellow, null, "Found full file path in string: '{0}'\r\nSplitting path and filename...", newPath);
+					sourceEncoding == null ? "0. Select Source Encoding\r\n" : String.Format("0. Reset Source Encoding: Source = '{0}'\r\n", sourceEncoding.EncodingName),
+					destEncoding == null ? "1. Select Destination Encoding\r\n" : String.Format("1. Reset Destination Encoding: Dest = '{0}'\r\n", destEncoding.EncodingName),
+					String.IsNullOrEmpty(path) ? "2. Select a Source Folder Path\r\n" : String.Format("2. Reset Source Folder Path: Source = '{0}'\r\n", path),
+					String.IsNullOrEmpty(filename) ? "3. Select a Source File Name\r\n" : String.Format("3. Reset Source File Name: Source = '{0}'\r\n", filename),
+					String.IsNullOrEmpty(newPath) ? "4. Select a Destination Folder Path\r\n" : String.Format("4. Reset Destination Folder Path: Dest = '{0}'\r\n", newPath),
+					String.IsNullOrEmpty(newFilename) ? "5. Select a Destination File Name\r\n" : String.Format("5. Reset Destination File Name: Dest = '{0}'\r\n", newFilename),
+					"6. Start Encoding\r\n"
+				};
 
-				int lastSlashIndex = newPath.LastIndexOf('\\') - 1;
-				newFilename = newPath.Substring(lastSlashIndex, newPath.Length - 1 - lastSlashIndex);
-				WriteToConsole(ConsoleColor.Yellow, null, "New filename: '{0}'", newFilename);
+				WriteTextEncodingMenu(encodingMainMenu, "Encoding Main Menu\r\n", clearConsole);
+				selection = Console.ReadLine();
 
-				newPath = newPath.Substring(0, lastSlashIndex);
-				WriteToConsole(ConsoleColor.Yellow, null, "New path: '{0}'", newPath);
-			}
+				Int32.TryParse(selection, out selectionIndex);
 
-			// Get text from file
-			string text = ReadTextFromFileAsUTF8(fullPath);
-
-			if (!String.IsNullOrEmpty(text))
-			{
-				// Convert the file to a byte array
-				byte[] conversion = ConvertUTF8ToISO88591(text);
-
-				if (conversion.Length > 1)
+				switch (selectionIndex)
 				{
-					// Write byte array to file
-					SaveBytesToFile(conversion, newPath, newFilename);
+					case 0: // Source Encoding
+						WriteTextEncodingMenu(sourceEncodingMenu, sourceEncodingHeadline, clearConsole);
+						selection = Console.ReadLine();
+
+						int tmp = -1;
+						Int32.TryParse(selection, out tmp);
+
+						switch (tmp)
+						{
+							case 0:
+							default:
+								if (!String.IsNullOrEmpty(path) && !String.IsNullOrEmpty(filename))
+									sourceEncoding = GetFileEncoding(Path.Combine(path, filename));
+								else
+									useFileSourceEncoding = true;
+								break;
+							case 1:
+								useFileSourceEncoding = false;
+								string[] encodings = new string[TextEncodings.Count];
+								int i = 0;
+
+								foreach (var o in TextEncodings.AsEnumerable())
+								{
+									encodings[i++] = String.Format("{0}. {1}\r\n", o.Key, o.Value);
+								}
+
+								WriteMenu(encodings, "Encoding List:\r\n", clearConsole);
+								selection = Console.ReadLine();
+
+								int enc = -1;
+								if (Int32.TryParse(selection, out enc))
+								{
+									try
+									{
+										sourceEncoding = Encoding.GetEncoding(enc);
+									}
+									catch (Exception e)
+									{
+										WriteErrorToConsole(e);
+									}
+								}
+								else
+								{
+									WriteToConsole(ConsoleColor.Red, null, "Error: Failed to successfully find a text encoder with the code: {0}", selection);
+								}
+								break;
+						}
+						break;
+					case 1: // Destination Encoding
+						WriteTextEncodingMenu(destEncodingMenu, destEncodingHeadline, clearConsole);
+						selection = Console.ReadLine();
+
+						int tmp2 = -1;
+						Int32.TryParse(selection, out tmp2);
+
+						switch (tmp2)
+						{
+							case 0:
+							default:
+								destEncoding = Encoding.UTF8;
+								break;
+							case 1:
+								string[] encodings = new string[TextEncodings.Count];
+								int i = 0;
+
+								foreach (var o in TextEncodings.AsEnumerable())
+								{
+									encodings[i++] = String.Format("{0}. {1}\r\n", o.Key, o.Value);
+								}
+
+								WriteMenu(encodings, "Encoding List:\r\n", clearConsole);
+								selection = Console.ReadLine();
+
+								int enc = -1;
+								if (Int32.TryParse(selection, out enc))
+								{
+									try
+									{
+										destEncoding = Encoding.GetEncoding(enc);
+									}
+									catch (Exception e)
+									{
+										WriteErrorToConsole(e);
+									}
+								}
+								else
+								{
+									WriteToConsole(ConsoleColor.Red, null, "Error: Failed to successfully find a text encoder with the code: {0}", selection);
+								}
+								break;
+						}
+						break;
+					case 2: // Source Folder Path
+						WriteTextEncodingMenu(pathMenu, sourcePathHeadline, clearConsole);
+						selection = Console.ReadLine();
+
+						int tmp3 = -1;
+						Int32.TryParse(selection, out tmp3);
+
+						switch (tmp3)
+						{
+							case 0:
+							default:
+								WriteToConsole(null, null, "Using Default Path:");
+								path = DEFAULT_SOURCE_PATH;
+								WriteToConsole(ConsoleColor.Green, null, "'{0}'", path);
+								break;
+							case 1:
+								WriteToConsole(null, null, "Type in a folder path...");
+								path = Console.ReadLine();
+
+								if (String.IsNullOrEmpty(path))
+								{
+									path = DEFAULT_SOURCE_PATH;
+									WriteToConsole(ConsoleColor.Green, null, "'{0}'", path);
+								}
+								else if (!String.IsNullOrEmpty(new FileInfo(path).Extension))
+								{
+									int lastSlashIndex = path.LastIndexOf('\\') - 1;
+									filename = path.Substring(lastSlashIndex, path.Length - 1 - lastSlashIndex);
+
+									path = path.Substring(0, lastSlashIndex);
+								}
+								break;
+						}
+
+						if (!String.IsNullOrEmpty(path) && !String.IsNullOrEmpty(filename))
+							sourceEncoding = GetFileEncoding(Path.Combine(path, filename));
+
+						if (!String.IsNullOrEmpty(path) && !String.IsNullOrEmpty(filename))
+							fullPath = Path.Combine(path, filename);
+						break;
+					case 3: // Source File Name
+						WriteTextEncodingMenu(fileMenu, sourceFileHeadline, clearConsole);
+						selection = Console.ReadLine();
+
+						int tmp4 = -1;
+						Int32.TryParse(selection, out tmp4);
+
+						switch (tmp4)
+						{
+							case 0:
+							default:
+								WriteToConsole(null, null, "Using Default File Name:");
+								filename = DEFAULT_SOURCE_FILENAME;
+								WriteToConsole(ConsoleColor.Green, null, "'{0}'", filename);
+								break;
+							case 1:
+								WriteToConsole(null, null, "Type in a file name...");
+								filename = Console.ReadLine();
+								FileInfo fi = new FileInfo(filename);
+
+								if (String.IsNullOrEmpty(filename))
+								{
+									filename = DEFAULT_SOURCE_FILENAME;
+									WriteToConsole(ConsoleColor.Green, null, "'{0}'", filename);
+								}
+								else if (fi.DirectoryName != Environment.CurrentDirectory)
+								{
+									path = fi.DirectoryName;
+									filename = fi.Name;
+								}
+								break;
+						}
+
+						if (!String.IsNullOrEmpty(path) && !String.IsNullOrEmpty(filename))
+							sourceEncoding = GetFileEncoding(Path.Combine(path, filename));
+
+						if (!String.IsNullOrEmpty(path) && !String.IsNullOrEmpty(filename))
+							fullPath = Path.Combine(path, filename);
+						break;
+					case 4: // Destination Folder Path
+						WriteTextEncodingMenu(pathMenu, destPathHeadline, clearConsole);
+						selection = Console.ReadLine();
+
+						int tmp5 = -1;
+						Int32.TryParse(selection, out tmp5);
+
+						switch (tmp5)
+						{
+							case 0:
+							default:
+								WriteToConsole(null, null, "Using Default Path:");
+								newPath = DEFAULT_DEST_PATH;
+								WriteToConsole(ConsoleColor.Green, null, "'{0}'", newPath);
+								break;
+							case 1:
+								WriteToConsole(null, null, "Type in a folder path...");
+								newPath = Console.ReadLine();
+
+								if (String.IsNullOrEmpty(newPath))
+								{
+									newPath = DEFAULT_DEST_PATH;
+									WriteToConsole(ConsoleColor.Green, null, "'{0}'", newPath);
+								}
+								else if (!String.IsNullOrEmpty(new FileInfo(newPath).Extension))
+								{
+									int lastSlashIndex = newPath.LastIndexOf('\\') - 1;
+									newFilename = newPath.Substring(lastSlashIndex, newPath.Length - 1 - lastSlashIndex);
+
+									newPath = newPath.Substring(0, lastSlashIndex);
+								}
+								break;
+						}
+						break;
+					case 5: // Destination File Name
+						WriteTextEncodingMenu(fileMenu, destFileHeadline, clearConsole);
+						selection = Console.ReadLine();
+
+						if (!String.IsNullOrEmpty(newFilename))
+							newFilename = String.Empty;
+
+						int tmp6 = -1;
+						Int32.TryParse(selection, out tmp6);
+
+						switch (tmp6)
+						{
+							case 0:
+							default:
+								WriteToConsole(null, null, "Using Default File Name:");
+								newFilename = DEFAULT_DEST_FILENAME(newFilename, destEncoding);
+								WriteToConsole(ConsoleColor.Green, null, "'{0}'", newFilename);
+								break;
+							case 1:
+								WriteToConsole(null, null, "Type in a file name...");
+								newFilename = Console.ReadLine();
+								FileInfo fi = new FileInfo(newFilename);
+
+								if (String.IsNullOrEmpty(newFilename))
+								{
+									newFilename = DEFAULT_DEST_FILENAME(newFilename, destEncoding);
+									WriteToConsole(ConsoleColor.Green, null, "'{0}'", newFilename);
+								}
+								else if (fi.DirectoryName != Environment.CurrentDirectory)
+								{
+									newPath = fi.DirectoryName;
+									newFilename = fi.Name;
+								}
+								break;
+						}
+						break;
+					case 6: // Start Encoding
+						if (sourceEncoding == null || 
+							destEncoding == null || 
+							String.IsNullOrEmpty(path) || 
+							String.IsNullOrEmpty(filename) || 
+							String.IsNullOrEmpty(newPath) || 
+							String.IsNullOrEmpty(newFilename))
+						{
+							WriteToConsole(ConsoleColor.Yellow, null, "Encoding Stopped.  Cannot encode with missing values, set values first!");
+							WriteToConsole(ConsoleColor.Green, null, "Press Enter to Return to Menu...");
+							Console.ReadLine();
+							continue;
+						}
+						else
+						{
+							// Get text from file
+							string text = ReadTextFromFile(fullPath, sourceEncoding);
+
+							if (!String.IsNullOrEmpty(text))
+							{
+								// Convert the file to a byte array
+								byte[] conversion = ConvertTextEncoding(text, sourceEncoding, destEncoding);
+
+								if (conversion.Length > 1)
+								{
+									// Write byte array to file
+									SaveBytesToFile(conversion, newPath, newFilename, destEncoding);
+								}
+							}
+						}
+						break;
+					default: goToMainMenu = true; continue;
 				}
 			}
 		}
 
-		static byte[] ConvertUTF8ToISO88591 (string message)
+		static byte[] ConvertTextEncoding(string message, Encoding src, Encoding dest)
 		{
 			try
 			{
 				WriteToConsole(ConsoleColor.White, null, "Encoding String...");
-				Encoding UTF = Encoding.UTF8;
-				Encoding ISO88591 = Encoding.GetEncoding("ISO-8859-1");
-				byte[] utfBytes = UTF.GetBytes(message);
-				byte[] isoBytes = Encoding.Convert(UTF, ISO88591, utfBytes);
+				byte[] srcBytes = src.GetBytes(message);
+				byte[] destBytes = Encoding.Convert(src, dest, srcBytes);
 				WriteToConsole(ConsoleColor.Green, null, "Done!\r\n");
 
-				return isoBytes;
+				return destBytes;
 			}
 			catch (Exception e)
 			{
@@ -308,7 +757,7 @@ namespace scratch_c_sharp
 			}
 		}
 
-		static string ReadTextFromFileAsUTF8(string path)
+		static string ReadTextFromFile(string path, Encoding srcEncoding)
 		{
 			if (!File.Exists(path))
 			{
@@ -326,28 +775,26 @@ namespace scratch_c_sharp
 					byte[] bytes = new byte[stream.Length];
 					new Random().NextBytes(bytes);
 
-					char block = (char)220;
+					char block = '■';
 					string bar = String.Empty;
+					string space = String.Empty;
 					float percent = 0;
 
 					Console.ForegroundColor = ConsoleColor.Green;
 
 					for (int i = 0; i < stream.Length; i++)
 					{ 
-						percent = (float)i / (float)bytes.Length;
-						bar = String.Empty;
-
-						for (int j = 0; j <= percent; j += 7)
-							bar += block;
-						
-						Console.Write(String.Format("{0} {1}%",bar, percent.ToString()));
+						percent = ((float)i / (float)bytes.Length) * 100;
+						bar = new string(block, (int)(Math.Round(percent / 7, MidpointRounding.AwayFromZero)));
+						space = new string(' ', 14 - (int)(Math.Round(percent / 7, MidpointRounding.AwayFromZero)));
+									
+						Console.Write(String.Format("{0} {1}%",bar + space, Math.Round(percent, MidpointRounding.AwayFromZero).ToString()));
 						Console.SetCursorPosition(0, Console.CursorTop);
 						bytes[i] = (byte)stream.ReadByte();
 					}
 
-					Encoding utf8 = Encoding.UTF8;
-					byte[] utfBytes = Encoding.Convert(Encoding.Default, utf8, bytes.ToArray<byte>());
-					value = utf8.GetString(utfBytes);
+					//byte[] outBytes = Encoding.Convert(Encoding.Default, srcEncoding, bytes.ToArray<byte>());
+					value = srcEncoding.GetString(bytes);
 				}
 				catch (Exception e)
 				{
@@ -358,7 +805,7 @@ namespace scratch_c_sharp
 			return value;
 		}
 
-		static void SaveBytesToFile(byte[] message, string path, string filename)
+		static void SaveBytesToFile(byte[] message, string path, string filename, Encoding destEncoding)
 		{
 			// Check path
 			if (!Directory.Exists(path))
@@ -382,12 +829,14 @@ namespace scratch_c_sharp
 				try
 				{
 					using (FileStream stream = new FileStream(fullpath, FileMode.Create, FileAccess.ReadWrite))
+					using (BinaryWriter writer = new BinaryWriter(stream, destEncoding))
 					{
 						// Write message to the file
-						for (int i = 0; i < message.Length; i++)
-						{
-							stream.WriteByte(message[i]);
-						}
+						//for (int i = 0; i < message.Length; i++)
+						//{
+						//	stream.WriteByte(message[i]);
+						//}
+						writer.Write(message);
 
 						// Verify the write bytes
 						stream.Seek(0, SeekOrigin.Begin);
@@ -406,6 +855,9 @@ namespace scratch_c_sharp
 								WriteErrorToConsole(e, "An Error Occurred During Validation:\r\n\r\nMessage:\r\n{0}\r\n\r\nStack Trace:\r\n{1}\r\n");
 							}
 						}
+						WriteToConsole(ConsoleColor.Green, null, "Validation Complete!");
+						WriteToConsole(ConsoleColor.Green, null, "Press Enter to continue...");
+						Console.ReadLine();
 					}
 				}
 				catch (Exception e)
@@ -481,6 +933,8 @@ namespace scratch_c_sharp
 				m = "An Error Occurred:\r\n\r\nMessage:\r\n{0}\r\n\r\nStack Trace:\r\n{1}\r\n";
 
 			WriteToConsole(ConsoleColor.Red, null, m, e.Message, e.StackTrace);
+			WriteToConsole(ConsoleColor.Green, null, "Press Enter to Return to Menu...");
+			Console.ReadLine();
 		}
 
 		static void WriteMenu(bool clearConsole = true)
@@ -494,8 +948,8 @@ namespace scratch_c_sharp
 				"4. Validate Braces\r\n",
 				"5. Final Price\r\n",
 				"6. Car Pricer\r\n",
-				"7. Convert UTF-8 File To ISO-8859-1\r\n",
-				"\r\nApplication Settings:",
+				"7. Convert Text Encoding\r\n",
+				"\r\nApplication Settings:\r\n",
 				"8. Toggle Clear Console\r\n",
 				"9. Exit"
 				},
@@ -518,22 +972,16 @@ namespace scratch_c_sharp
 			WriteToConsole(Console.ForegroundColor = ConsoleColor.Cyan, null, formatting, args);
 		}
 
-		static void WriteTextEncodingMenu(string SourceDestHeadline, bool clearConsole = true)
+		static void WriteTextEncodingMenu(string[] menu, string headline, bool clearConsole = true)
 		{
-			WriteMenu(new string[] {
-				SourceDestHeadline + "\r\n",
-				"0. ASCII\r\n",
-				"1. Big Endian Unicode\r\n",
-				"2. Default\r\n",
-				"3. ISO-8859-1\r\n",
-				"4. Unicode\r\n",
-				"5. UTF-32\r\n",
-				"6. UTF-7\r\n",
-				"7. UTF-8\r\n",
-				"\r\nSettings:\r\n",
-				"8. Return To Main Menu"
-			},
-			"Text Encoding Menu:\r\n\r\n",
+			string[] m = new string[menu.Length + 2];
+			Array.Copy(menu, m, menu.Length);
+
+			m[m.Length - 2] = "\r\nSettings:\r\n";
+			m[m.Length - 1] = String.Format("{0}. Return To Main Menu", menu.Length);
+
+			WriteMenu(m,
+			headline,
 			clearConsole);
 		}
 
