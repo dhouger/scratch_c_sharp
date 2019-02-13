@@ -82,7 +82,8 @@ namespace scratch_c_sharp
 			VALID_BRACES,
 			FINAL_PRICE,
 			CAR_PRICER,
-			CONVERT_UTF8_TO_ISO88591,
+			CONVERT_TEXT_ENCODING,
+			TEST,
 			CLEAR_CONSOLE,
 			EXIT
 		}
@@ -231,6 +232,34 @@ namespace scratch_c_sharp
 			{ 10017,"x-mac-ukrainian:         Ukrainian (Mac)" }
 		};
 
+		static bool FileIsValidUnicode(string filepath)
+		{
+			string text;
+
+			try
+			{
+				byte[] b = File.ReadAllBytes(filepath);
+
+				text = Encoding.UTF8.GetString(b);
+
+				for (int i = 0; i < b.Length - 4; i++)
+				{
+					if (b[i] >= 0xF0 && b[i] <= 0xF4 && b[i + 1] >= 0x80 && b[i + 1] < 0xC0 && b[i + 2] >= 0x80 && b[i + 2] < 0xC0 && b[i + 3] >= 0x80 && b[i + 3] < 0xC0) { i += 3; continue; }
+					if (b[i] >= 0xE0 && b[i] <= 0xF0 && b[i + 1] >= 0x80 && b[i + 1] < 0xC0 && b[i + 2] >= 0x80 && b[i + 2] < 0xC0) { i += 2; continue; }
+					if (b[i] >= 0xC2 && b[i] <= 0xDF && b[i + 1] >= 0x80 && b[i + 1] < 0xC0) { i += 1; continue; }
+					if (b[i] <= 0x7f) { continue; }
+					return false;
+				}
+			}
+			catch (Exception e)
+			{
+				WriteErrorToConsole(e);
+				return true;
+			}
+
+			return true;
+		}
+
 		static Encoding GetFileEncoding(string filePath)
 		{
 			try
@@ -356,8 +385,13 @@ namespace scratch_c_sharp
 								Console.WriteLine("$" + price.DetermineCarPrice(car));
 
 								break;
-							case (int)Menu.CONVERT_UTF8_TO_ISO88591:
+							case (int)Menu.CONVERT_TEXT_ENCODING:
 								ConvertFile();
+								break;
+							case (int)Menu.TEST:
+								WriteToConsole(ConsoleColor.Green, null, "Type in a file path & name...");
+								string text = Console.ReadLine();
+								WriteToConsole(ConsoleColor.Green, null, "The string is a valid UTF-8 string = {0}", new string[] { FileIsValidUnicode(text).ToString() });
 								break;
 							case (int)Menu.CLEAR_CONSOLE:
 								clearConsole = true;
@@ -682,7 +716,7 @@ namespace scratch_c_sharp
 							case 0:
 							default:
 								WriteToConsole(null, null, "Using Default File Name:");
-								newFilename = DEFAULT_DEST_FILENAME(newFilename, destEncoding);
+								newFilename = DEFAULT_DEST_FILENAME(filename, destEncoding);
 								WriteToConsole(ConsoleColor.Green, null, "'{0}'", newFilename);
 								break;
 							case 1:
@@ -692,7 +726,7 @@ namespace scratch_c_sharp
 
 								if (String.IsNullOrEmpty(newFilename))
 								{
-									newFilename = DEFAULT_DEST_FILENAME(newFilename, destEncoding);
+									newFilename = DEFAULT_DEST_FILENAME(filename, destEncoding);
 									WriteToConsole(ConsoleColor.Green, null, "'{0}'", newFilename);
 								}
 								else if (fi.DirectoryName != Environment.CurrentDirectory)
@@ -941,17 +975,18 @@ namespace scratch_c_sharp
 		{
 			WriteMenu(
 				new string[] {
-				"0. Linked List\r\n",
-				"1. Remove Characters\r\n",
-				"2. Reverse Words\r\n",
-				"3. Rotate Image (Multidementional Array)\r\n",
-				"4. Validate Braces\r\n",
-				"5. Final Price\r\n",
-				"6. Car Pricer\r\n",
-				"7. Convert Text Encoding\r\n",
+				"0.  Linked List\r\n",
+				"1.  Remove Characters\r\n",
+				"2.  Reverse Words\r\n",
+				"3.  Rotate Image (Multidementional Array)\r\n",
+				"4.  Validate Braces\r\n",
+				"5.  Final Price\r\n",
+				"6.  Car Pricer\r\n",
+				"7.  Convert Text Encoding\r\n",
+				"8.  Check a file is \r\n",
 				"\r\nApplication Settings:\r\n",
-				"8. Toggle Clear Console\r\n",
-				"9. Exit"
+				"9.  Toggle Clear Console\r\n",
+				"10. Exit"
 				},
 				"Main Menu:\r\n",
 				clearConsole);
