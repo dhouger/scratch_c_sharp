@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CarPricer;
+using Validation;
 using System.IO;
 using System.Security.AccessControl;
 using System.Security.Principal;
@@ -84,6 +85,8 @@ namespace scratch_c_sharp
 			CAR_PRICER,
 			CONVERT_TEXT_ENCODING,
 			TEST,
+			GENERATE_UNICODE_FILES,
+			CONVERT_TEXT_USING_CLASS,
 			CLEAR_CONSOLE,
 			EXIT
 		}
@@ -393,6 +396,90 @@ namespace scratch_c_sharp
 								string text = Console.ReadLine();
 								WriteToConsole(ConsoleColor.Green, null, "The string is a valid UTF-8 string = {0}", new string[] { FileIsValidUnicode(text).ToString() });
 								break;
+							case (int)Menu.GENERATE_UNICODE_FILES:
+								int tmpsel = -1;
+								while (tmpsel != 2)
+								{
+									WriteMenu(new string[] {
+									"0. Use Default Settings\r\n",
+									"1. Input Custom Settings\r\n",
+									"2. Return to Main Menu"
+								}, "Generate Unicode Files Menu\r\n", clearConsole);
+									selection = Console.ReadLine();
+									Int32.TryParse(selection, out tmpsel);
+									switch (tmpsel)
+									{
+										case 0:
+										default:
+											WriteToConsole(ConsoleColor.Green, null, "Creating Test File...");
+											EncodingValidation.CreateUnicodeTestFiles();
+											WriteToConsole(ConsoleColor.Green, null, "Done!");
+											tmpsel = 2;
+											break;
+										case 1:
+											int tmpsel2 = -1;
+											int numFiles = 1;
+											int unicodeRange = 109384;
+
+											while (tmpsel2 != 3)
+											{
+												WriteMenu(new string[]
+												{
+													String.Format("0. Input Number of Files To Create.  Currently: {0}\r\n", numFiles),
+													String.Format("1. Input the Range of Unicode Characters to Create.  Currently: {0}\r\n", unicodeRange),
+													(numFiles > 1 ? "2. Create Files" : "2. Create File\r\n"),
+													"3. Return to File Creation Menu\r\n"
+												}, "Select File Generation Options\r\n", clearConsole);
+												selection = Console.ReadLine();
+												Int32.TryParse(selection, out tmpsel2);
+												switch (tmpsel2)
+												{
+													case 0:
+														selection = Console.ReadLine();
+														Int32.TryParse(selection, out numFiles);
+														break;
+													case 1:
+														selection = Console.ReadLine();
+														Int32.TryParse(selection, out unicodeRange);
+														break;
+													case 2:
+														WriteToConsole(ConsoleColor.Green, null, "Creating Test Files...");
+														EncodingValidation.CreateUnicodeTestFiles();
+														WriteToConsole(ConsoleColor.Green, null, "Done!");
+														tmpsel2 = 3;
+														tmpsel = 2;
+														break;
+													case 3:
+													default:
+														break;
+												}
+											}
+											break;
+										case 2:
+											break;
+									}
+								}
+								break;
+							case (int)Menu.CONVERT_TEXT_USING_CLASS:
+								WriteToConsole(ConsoleColor.Green, null, "Running UTF-8 Validation & Conversion on Test Files...");
+								WriteToConsole(null, null, "Input a file path");
+								string input = Console.ReadLine();
+								input = input.Trim('"');
+								WriteToConsole(null, null, "Checking for UTF-8 Validity...");
+								if (!EncodingValidation.FileIsValidUTF8(input))
+								{
+									WriteToConsole(ConsoleColor.Red, null, "File is not valid UTF-8");
+									WriteToConsole(null, null, "Encoding file to UTF-8");
+
+									string dest = input.Insert(input.LastIndexOf(".") - 1, "UTF-8");
+
+									new EncodingValidation(input, dest);
+
+									WriteToConsole(ConsoleColor.Green, null, "Done!");
+								}
+								else
+									WriteToConsole(ConsoleColor.Green, null, "File is a valid UTF-8 file");
+								break;
 							case (int)Menu.CLEAR_CONSOLE:
 								clearConsole = true;
 								Console.ForegroundColor = ConsoleColor.White;
@@ -614,8 +701,8 @@ namespace scratch_c_sharp
 								}
 								else if (!String.IsNullOrEmpty(new FileInfo(path).Extension))
 								{
-									int lastSlashIndex = path.LastIndexOf('\\') - 1;
-									filename = path.Substring(lastSlashIndex, path.Length - 1 - lastSlashIndex);
+									int lastSlashIndex = path.LastIndexOf('\\');
+									filename = path.Substring(lastSlashIndex + 1, path.Length - 1 - lastSlashIndex);
 
 									path = path.Substring(0, lastSlashIndex);
 								}
@@ -693,8 +780,8 @@ namespace scratch_c_sharp
 								}
 								else if (!String.IsNullOrEmpty(new FileInfo(newPath).Extension))
 								{
-									int lastSlashIndex = newPath.LastIndexOf('\\') - 1;
-									newFilename = newPath.Substring(lastSlashIndex, newPath.Length - 1 - lastSlashIndex);
+									int lastSlashIndex = newPath.LastIndexOf('\\');
+									newFilename = newPath.Substring(lastSlashIndex + 1, newPath.Length - 1 - lastSlashIndex);
 
 									newPath = newPath.Substring(0, lastSlashIndex);
 								}
@@ -983,10 +1070,12 @@ namespace scratch_c_sharp
 				"5.  Final Price\r\n",
 				"6.  Car Pricer\r\n",
 				"7.  Convert Text Encoding\r\n",
-				"8.  Check a file is \r\n",
+				"8.  Check a file is valid UTF-8\r\n",
+				"9.  Generate Unicode Test Files\r\n",
+				"10. Convert Text Encoding with Class\r\n",
 				"\r\nApplication Settings:\r\n",
-				"9.  Toggle Clear Console\r\n",
-				"10. Exit"
+				"11.  Toggle Clear Console\r\n",
+				"12. Exit"
 				},
 				"Main Menu:\r\n",
 				clearConsole);

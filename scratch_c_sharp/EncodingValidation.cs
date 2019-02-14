@@ -7,7 +7,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace scratch_c_sharp
+namespace Validation
 {
 	class EncodingValidation
 	{
@@ -185,7 +185,7 @@ namespace scratch_c_sharp
 			Encoding src = Encoding.GetEncoding(sourceEncoding);
 			Encoding dest = Encoding.GetEncoding(destEncoding);
 
-			Initialize(src, dest, sourcePath, sourceFilename, destPath, destFilename);
+			BeginEncoding(src, dest, sourcePath, sourceFilename, destPath, destFilename);
 		}
 
 		/// <summary>
@@ -193,7 +193,7 @@ namespace scratch_c_sharp
 		/// </summary>
 		public EncodingValidation(Encoding sourceEncoding, Encoding destEncoding, string sourcePath, string sourceFilename, string destPath, string destFilename)
 		{
-			Initialize(sourceEncoding, destEncoding, sourcePath, sourceFilename, destPath, destFilename);
+			BeginEncoding(sourceEncoding, destEncoding, sourcePath, sourceFilename, destPath, destFilename);
 		}
 
 		/// <summary>
@@ -204,7 +204,7 @@ namespace scratch_c_sharp
 			Encoding src = GetFileEncoding(Path.Combine(sourcePath, sourceFilename));
 			Encoding dest = Encoding.UTF8;
 
-			Initialize(src, dest, sourcePath, sourceFilename, destPath, destFilename);
+			BeginEncoding(src, dest, sourcePath, sourceFilename, destPath, destFilename);
 		}
 
 		/// <summary>
@@ -227,7 +227,7 @@ namespace scratch_c_sharp
 
 			string destPath = destination.Substring(0, lastSlashIndex);
 
-			Initialize(sourceEncoding, destEncoding, sourcePath, sourceFilename, destPath, destFilename);
+			BeginEncoding(sourceEncoding, destEncoding, sourcePath, sourceFilename, destPath, destFilename);
 		}
 
 		/// <summary>
@@ -251,7 +251,7 @@ namespace scratch_c_sharp
 			Encoding src = GetFileEncoding(source);
 			Encoding dest = Encoding.UTF8;
 
-			Initialize(src, dest, sourcePath, sourceFilename, destPath, destFilename);
+			BeginEncoding(src, dest, sourcePath, sourceFilename, destPath, destFilename);
 		}
 
 		/// <summary>
@@ -268,7 +268,7 @@ namespace scratch_c_sharp
 		/// Start checking encoding for a specified file
 		/// </summary>
 		/// <returns>Success of the function</returns>
-		public bool Initialize(Encoding sourceEncoding, Encoding destEncoding, string sourcePath, string sourceFilename, string destPath, string destFilename)
+		public bool BeginEncoding(Encoding sourceEncoding, Encoding destEncoding, string sourcePath, string sourceFilename, string destPath, string destFilename)
 		{
 			try
 			{
@@ -296,6 +296,56 @@ namespace scratch_c_sharp
 							{
 								// Write byte array to file
 								SaveBytesToFile(conversion, destPath, destFilename, destEncoding);
+							}
+						}
+					}
+				}
+
+				return true;
+			}
+			catch (Exception e)
+			{
+				LogError(e);
+				return false;
+			}
+		}
+
+		/// <summary>
+		/// Start checking encoding for a specified file, uses the source filename as a template for destination encodings
+		/// </summary>
+		/// <returns>Success of the function</returns>
+		public bool BeginEncoding(Encoding sourceEncoding, Encoding[] destEncodings, string sourcePath, string sourceFilename, string destPath)
+		{
+			try
+			{
+				if (!FileIsValidUTF8(Path.Combine(sourcePath, sourceFilename)))
+				{
+					if (String.IsNullOrEmpty(sourcePath) ||
+						String.IsNullOrEmpty(sourceFilename) ||
+						String.IsNullOrEmpty(destPath))
+					{
+						LogMessage(ConsoleColor.Yellow, null, "Encoding Stopped.  Cannot encode with missing values, set values first!");
+					}
+					else
+					{
+
+						// Get text from file
+						string text = ReadTextFromFile(Path.Combine(sourcePath, sourceFilename), sourceEncoding);
+
+						if (!String.IsNullOrEmpty(text))
+						{
+							foreach (Encoding destEncoding in destEncodings)
+							{
+								string destFilename = sourceFilename.Insert(sourceFilename.IndexOf('.'),
+									'-' + destEncoding.BodyName + '-' + destEncoding.EncodingName.Replace(' ', '-').Replace("/", ""));
+								// Convert the file to a byte array
+								byte[] conversion = ConvertTextEncoding(text, sourceEncoding, destEncoding);
+
+								if (conversion.Length > 1)
+								{
+									// Write byte array to file
+									SaveBytesToFile(conversion, destPath, destFilename, destEncoding);
+								}
 							}
 						}
 					}
@@ -366,6 +416,140 @@ namespace scratch_c_sharp
 				return null;
 			}
 		}
+
+		/// <summary>
+		/// Creates a file or files with as many implemented Unicode characters as possible
+		/// </summary>
+		/// <param name="fileCount"></param>
+		/// <param name="range"></param>
+		public static void CreateUnicodeTestFiles()
+		{
+			// Unicode planes
+			int plane1 = 0x10000;
+			int plane2 = 0x20000;
+			int plane14 = 0xE0000;
+
+			// Not all of these characters are assigned in Unicode yet, but they should still write the unknown character depending on encoding.
+			int range0min = 0x0000; int range0max = 0x0FFF;
+									int range4max = 0x4FFF;
+			int range6min = 0x6000;
+									int range8max = 0x8FFF;
+			int rangeBmin = 0xB000; int rangeBmax = 0xBFFF;
+			int rangeDmin = 0xD000;
+									int rangeFmax = 0xFFFF;
+
+			string folder = DateTime.Now.Year.ToString() + '-' + DateTime.Now.Month + '-' + DateTime.Now.Day,
+				path = Path.Combine(Environment.CurrentDirectory, folder),
+				filename = "test.markdown",
+				file = Path.Combine(path, filename);
+			byte[] space = Encoding.UTF32.GetBytes(new char[] { ' ' });
+			byte[] header = Encoding.UTF32.GetBytes("---\r\ntitle: \"Test Page for Jekyll & Markdown\"\r\ndate: 2019 - 02 - 01 2:23:00 - 0800\r\ncategories: jekyll update\r\n---\r\n");
+			if (File.Exists(file))
+				File.Delete(file);
+
+			if (!Directory.Exists(path))
+				Directory.CreateDirectory(path);
+
+			using (FileStream stream = new FileStream(file, FileMode.Create, FileAccess.ReadWrite))
+			{
+				stream.Write(header, 0, header.Length);
+
+				// handle the first 0x14FFF Unicode characters
+				for (int i = 0; i <= (plane1 + range4max); i++)
+				{
+					byte[] unicode = GetBytes(i);
+					stream.Write(unicode, 0, unicode.Length);
+					stream.Write(space, 0, space.Length);
+				}
+
+				// handle the Unicode characters between 0x16000 and 0x18FFF
+				for (int i = plane1 + range6min; i <= plane1 + range8max; i++)
+				{
+					byte[] unicode = GetBytes(i);
+					stream.Write(unicode, 0, unicode.Length);
+					stream.Write(space, 0, space.Length);
+				}
+
+				// handle the Unicode characters between 0x1B000 and 0x1BFFF
+				for (int i = plane1 + rangeBmin; i <= plane1 + rangeBmax; i++)
+				{
+					byte[] unicode = GetBytes(i);
+					stream.Write(unicode, 0, unicode.Length);
+					stream.Write(space, 0, space.Length);
+				}
+
+				// handle the Unicode characters between 0x1D000 and 0x2FFFF
+				for (int i = plane1 + rangeDmin; i <= plane2 + rangeFmax; i++)
+				{
+					byte[] unicode = GetBytes(i);
+					stream.Write(unicode, 0, unicode.Length);
+					stream.Write(space, 0, space.Length);
+				}
+
+				// handle the Unicode characters between 0xE0000 and 0xE0FFF
+				for (int i = plane14 + range0min; i <= plane14 + range0max; i++)
+				{
+					byte[] unicode = GetBytes(i);
+					stream.Write(unicode, 0, unicode.Length);
+					stream.Write(space, 0, space.Length);
+				}
+
+				stream.Close();
+			}
+
+			// Create Different Encoding Files
+			List<Encoding> encodings = new List<Encoding>();
+			foreach (var o in TextEncodings)
+			{
+				encodings.Add(Encoding.GetEncoding(o.Key));
+			}
+			EncodingValidation fileEncoding = new EncodingValidation();
+			fileEncoding.BeginEncoding(Encoding.UTF32, encodings.ToArray(), path, filename, path);
+		}
+
+		private static byte[] GetBytes(int input)
+		{
+			byte[] output = new byte[4];
+			int tmp = input;
+			int index = 3;
+
+			if (input >= 0x01000000)
+			{
+				output[index--] = (byte)(tmp / 0x01000000);
+				tmp %= 0x01000000;
+			}
+			else output[index--] = (byte)0x00;
+
+			if (input >= 0x010000)
+			{
+				if (output == null)
+					output = new byte[3];
+
+				output[index--] = (byte)(tmp / 0x010000);
+				tmp %= 0x010000;
+			}
+			else output[index--] = (byte)0x00;
+
+			if (input >= 0x0100)
+			{
+				if (output == null)
+					output = new byte[2];
+
+				output[index--] = (byte)(tmp / 0x0100);
+				tmp %= 0x0100;
+			}
+			else output[index--] = (byte)0x00;
+
+			if (input >= 0)
+			{
+				if (output == null)
+					output = new byte[1];
+
+				output[index] = (byte)tmp;
+			}
+
+			return output;
+		}
 		#endregion
 
 		#region Private Functions
@@ -423,16 +607,16 @@ namespace scratch_c_sharp
 					string space = String.Empty;
 					float percent = 0;
 
-					Console.ForegroundColor = ConsoleColor.Green;
+					//Console.ForegroundColor = ConsoleColor.Green;
 
 					for (int i = 0; i < stream.Length; i++)
 					{
-						percent = ((float)i / (float)bytes.Length) * 100;
-						bar = new string(block, (int)(Math.Round(percent / 7, MidpointRounding.AwayFromZero)));
-						space = new string(' ', 14 - (int)(Math.Round(percent / 7, MidpointRounding.AwayFromZero)));
+						//percent = ((float)i / (float)bytes.Length) * 100;
+						//bar = new string(block, (int)(Math.Round(percent / 7, MidpointRounding.AwayFromZero)));
+						//space = new string(' ', 14 - (int)(Math.Round(percent / 7, MidpointRounding.AwayFromZero)));
 
-						Console.Write(String.Format("{0} {1}%", bar + space, Math.Round(percent, MidpointRounding.AwayFromZero).ToString()));
-						Console.SetCursorPosition(0, Console.CursorTop);
+						//Console.Write(String.Format("{0} {1}%", bar + space, Math.Round(percent, MidpointRounding.AwayFromZero).ToString()));
+						//Console.SetCursorPosition(0, Console.CursorTop);
 						bytes[i] = (byte)stream.ReadByte();
 					}
 
@@ -507,7 +691,6 @@ namespace scratch_c_sharp
 						}
 						LogMessage(ConsoleColor.Green, null, "Validation Complete!");
 						LogMessage(ConsoleColor.Green, null, "Press Enter to continue...");
-						Console.ReadLine();
 					}
 				}
 				catch (Exception e)
