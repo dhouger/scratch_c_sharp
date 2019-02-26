@@ -393,8 +393,9 @@ namespace scratch_c_sharp
 								break;
 							case (int)Menu.TEST:
 								WriteToConsole(ConsoleColor.Green, null, "Type in a file path & name...");
-								string text = Console.ReadLine();
-								WriteToConsole(ConsoleColor.Green, null, "The string is a valid UTF-8 string = {0}", new string[] { FileIsValidUnicode(text).ToString() });
+								string text = Console.ReadLine().Trim('"');
+								bool isValid = FileIsValidUnicode(text);
+								WriteToConsole(isValid ? ConsoleColor.Green : ConsoleColor.Red, null, "The string is a valid UTF-8 string = {0}", new string[] { isValid.ToString() });
 								break;
 							case (int)Menu.GENERATE_UNICODE_FILES:
 								int tmpsel = -1;
